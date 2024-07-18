@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-userSchema.index({ location: '2dsphere' });
+userSchema.index({ 'location.coordinates': '2dsphere' });
 
 const User = mongoose.model('User', userSchema);
 

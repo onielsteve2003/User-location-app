@@ -1,8 +1,9 @@
 const User = require('../models/User');
 
-const getUserWithInRadius = async(req, res) => {
+const getUserWithInRadius = async (req, res) => {
   const { latitude, longitude, page = 1, limit = 10 } = req.query;
-  const radius = 10 / 6378.1; // 10 km in radians (Earth's radius is approximately 6378.1 km)
+  const radiusKm = 10; // 10 km
+  const radius = radiusKm / 6378.1; // Convert km to radians (Earth's radius is approximately 6378.1 km)
 
   // Check if latitude and longitude are provided
   if (!latitude || !longitude) {
@@ -30,7 +31,6 @@ const getUserWithInRadius = async(req, res) => {
   }
 
   try {
-    // Query users within the radius
     const users = await User.find({
       location: {
         $geoWithin: {
@@ -82,7 +82,7 @@ const getUserWithInRadius = async(req, res) => {
   }
 }
 
-const addUserEndpoint = async(req, res) => {
+const addUserEndpoint = async (req, res) => {
   // Extract name, latitude, and longitude from request body
   const { name, latitude, longitude } = req.body;
 
@@ -92,12 +92,11 @@ const addUserEndpoint = async(req, res) => {
   }
 
   try {
-    // Validate latitude and longitude
     const user = new User({
       name,
       location: {
         type: 'Point',
-        coordinates: [parseFloat(longitude), parseFloat(latitude)],
+        coordinates: [parseFloat(longitude), parseFloat(latitude)]
       }
     });
 
